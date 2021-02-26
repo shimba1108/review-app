@@ -1,7 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList, SafeAreaView } from "react-native";
+import ShopReveiwItems from "./src/components/ShopReveiwItems";
 import { getShops } from "./src/lib/firebase";
+import { Shop } from "./src/types/shops";
 
 export default function App() {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -15,17 +17,20 @@ export default function App() {
   };
 
   const shopItems = shops.map((shop, i) => (
-    <View key={i.toString()}>
-      <Text>{shop.name}</Text>
-      <Text>{shop.location}</Text>
-    </View>
+    <ShopReveiwItems shop={shop} key={i.toString()} />
   ));
 
   return (
-    <View style={styles.container}>
-      <Text>{shopItems}</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={shops}
+        renderItem={({ item }: { item: Shop }) => (
+          <ShopReveiwItems shop={item} />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        numColumns={2}
+      />
+    </SafeAreaView>
   );
 }
 
